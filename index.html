@@ -6,258 +6,398 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>NIHS Zombie School</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#030711;color:#fff;font-family:Arial,sans-serif}
-button,select{font:inherit}
-button{padding:13px 17px;border:1px solid #46d9ff;border-radius:12px;background:linear-gradient(135deg,#087da7,#4822a6);color:white;font-weight:bold;cursor:pointer}
-button:active{transform:scale(.97)}
-.screen{display:none;min-height:100dvh;padding:20px;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at top,#132b4a,#030711 70%)}
-.screen.active{display:flex;animation:fade .3s}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-.content{width:min(100%,520px);margin:auto}
-h1{color:#71eaff;text-shadow:0 0 16px #008bff;font-size:clamp(25px,6vw,40px)}
-h2{color:#79eaff}
-p{color:#c3d3e1;line-height:1.5}
-.logo{width:95px;height:95px;object-fit:contain;border-radius:50%;border:2px solid #53dcff}
-.buttons{display:grid;gap:12px;width:min(100%,330px);margin:22px auto}
-.secondary{background:#101d2c;border-color:#455b76}
-.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
-.card{min-height:75px;padding:12px 5px;background:#0d1c2c;border:1px solid #304b65;border-radius:13px;color:white;font-weight:bold;cursor:pointer}
-.card.selected{border:2px solid #72eaff;box-shadow:0 0 15px #00aaff55;background:#13304a}
+:root{--blue:#36cfff;--purple:#bd70ff;--bg:#050914}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif;overflow:hidden}
+button,input{font:inherit}
+button{background:linear-gradient(135deg,#087ea8,#4722a2);color:white;border:1px solid var(--blue);border-radius:12px;padding:12px 16px;font-weight:bold;cursor:pointer}
+button:active{transform:scale(.96)}
+.secondary{background:#111d2b;border-color:#41556e}
+.screen{position:absolute;inset:0;display:none;overflow:auto;align-items:center;justify-content:center;text-align:center;padding:18px;background:radial-gradient(ellipse at top,#17304e,#050914 75%)}
+.screen.active{display:flex}
+.content{width:min(100%,560px);margin:auto}
+h1{font-size:clamp(25px,5vw,40px);color:var(--blue);text-shadow:0 0 18px #007cff;margin:12px 0}
+p{line-height:1.5;color:#c5d5e6}
+.small{font-size:12px;color:#8fa6bd}
+.logo{width:90px;height:90px;object-fit:contain;border:2px solid var(--blue);border-radius:50%}
+.buttons{display:grid;gap:10px;width:min(100%,330px);margin:18px auto}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:18px 0}
+.card{padding:13px 4px;background:#101e30;border:1px solid #314d69;border-radius:12px;overflow-wrap:anywhere}
 .names{grid-template-columns:repeat(2,minmax(0,1fr))}
-.names .card{min-height:54px;overflow-wrap:anywhere}
-.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px}
-.row button{flex:1;min-width:110px}
-.preview{width:145px;height:165px;margin:16px auto;border-radius:20px;border:2px solid #5ee7ff;background:linear-gradient(#102941,#080d19);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
-.avatar{font-size:66px;filter:drop-shadow(0 0 12px #36cfff)}
-#previewName{font-weight:bold;font-size:18px;overflow-wrap:anywhere}
-.special-blue{border-color:#258bff;box-shadow:0 0 25px #167bff77}
-.special-purple{border-color:#be63ff;box-shadow:0 0 25px #a02dff77}
-.note{font-size:12px;color:#8ea7bd}
-@media(max-width:350px){.cards{gap:6px}.card{font-size:12px;padding:9px 3px}}
+.names .card{font-size:13px}
+.panel{background:#0b1625ed;border:1px solid #2f536d;border-radius:18px;padding:20px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.row button{flex:1}
+.preview{width:135px;height:145px;margin:16px auto;border:2px solid var(--blue);border-radius:18px;background:linear-gradient(#15334c,#080e18);display:grid;place-content:center;gap:8px;font-size:56px}
+.preview strong{font-size:16px;overflow-wrap:anywhere}
+.blue{border-color:#168dff;box-shadow:0 0 25px #167bff66}
+.purple{border-color:#c16aff;box-shadow:0 0 25px #b32fff66}
+#game{padding:0;overflow:hidden;background:#05090e}
+#cv{width:100%;height:100%;display:block;touch-action:none}
+.hud{position:absolute;inset:0;pointer-events:none}
+.top{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.info{background:#07111de8;border:1px solid #33516a;padding:7px;border-radius:10px;font-size:12px}
+.hud button,.controls button{pointer-events:auto}
+.hp{height:7px;background:#52202b;margin-top:4px;border-radius:6px;overflow:hidden}
+#hpfill{height:100%;width:100%;background:#49e88c}
+.controls{position:absolute;inset:0;pointer-events:none}
+#joy{position:absolute;left:18px;bottom:18px;width:112px;height:112px;border:2px solid #ffffff66;background:#10283b99;border-radius:50%;pointer-events:auto;touch-action:none}
+#knob{position:absolute;left:32px;top:32px;width:44px;height:44px;border-radius:50%;background:#49cfffaa;border:2px solid white}
+#attack{position:absolute;right:20px;bottom:22px;width:86px;height:86px;border-radius:50%;background:#a12845e8;border:2px solid #ff839e;pointer-events:auto;touch-action:none}
+#aim{position:absolute;right:110px;bottom:15px;width:90px;height:115px;pointer-events:auto;touch-action:none}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#000c;padding:16px}
+.overlay .panel{width:min(100%,400px)}
+@media(orientation:portrait){#game:after{content:"Palihog tuyoka ang telepono ngadto sa landscape.";position:absolute;top:45%;left:10px;right:10px;background:#07111df0;padding:12px;border-radius:10px;pointer-events:none}}
 </style>
 </head>
 <body>
 
 <section id="intro" class="screen active">
- <div class="content">
-  <img src="./nihs-logo.jpg" class="logo" alt="NIHS logo" onerror="this.style.display='none'">
-  <h1>NEW ISRAEL<br>HIGH SCHOOL ZOMBIE'S</h1>
-  <p>Makalahutay sa eskwelahan!</p>
-  <p class="note">Dula lamang kini nga hinimo-himo.</p>
-  <p>Gipalambo ni John Reynard</p>
-  <button onclick="show('menu')">SUGOD</button>
- </div>
+<div class="content">
+<img class="logo" src="./nihs-logo.jpg" alt="NIHS Logo" onerror="this.style.display='none'">
+<p class="small">NEW ISRAEL HIGH SCHOOL PRESENTS</p>
+<h1>NIHS<br>ZOMBIE SCHOOL</h1>
+<p>Makalahutay sa eskwelahan!</p>
+<p class="small">Hinimo-himo nga dula. Gipalambo ni John Reynard.</p>
+<button onclick="go('menu')">SUGOD</button>
+</div>
 </section>
 
 <section id="menu" class="screen">
- <div class="content">
-  <p class="note">NIHS • SURVIVAL PROJECT</p>
-  <h1>ZOMBIE<br>SCHOOL</h1>
-  <p>Andam na ba ka nga makalahutay?</p>
-  <div class="buttons">
-   <button onclick="show('grades')">▶ DULA NA</button>
-   <button class="secondary" onclick="show('shop')">TINDAHAN</button>
-   <button class="secondary" onclick="show('settings')">MGA SETTING</button>
-  </div>
-  <p class="note">DEVELOPED BY JOHN REYNARD</p>
- </div>
+<div class="content">
+<p class="small">NEW ISRAEL HIGH SCHOOL</p>
+<h1>🧟 ZOMBIE SCHOOL</h1>
+<p>Panalipdi ang imong kaugalingon batok sa mga zombie.</p>
+<div class="buttons">
+<button onclick="go('grades')">▶ DULA NA</button>
+<button class="secondary" onclick="shopRender();go('shop')">⚒ TINDAHAN</button>
+<button class="secondary" onclick="go('settings')">⚙ MGA SETTING</button>
+</div>
+<p class="small">DEVELOPED BY JOHN REYNARD</p>
+</div>
 </section>
 
 <section id="grades" class="screen">
- <div class="content">
-  <h1>PILIA ANG GRADO</h1>
-  <p>Unsa nga grado ka magdula?</p>
-  <div id="gradeCards" class="cards"></div>
-  <button class="secondary" onclick="show('menu')">← BALIK</button>
- </div>
+<div class="content">
+<h1>PILIA ANG GRADO</h1>
+<div id="gradeCards" class="cards"></div>
+<button class="secondary" onclick="go('menu')">← BALIK</button>
+</div>
 </section>
 
 <section id="gender" class="screen">
- <div class="content">
-  <h1>PILIA ANG KARAKTER</h1>
-  <p id="gradeLabel"></p>
-  <div class="cards">
-   <button class="card" onclick="chooseGender('boys')">👦<br>LALAKI</button>
-   <button class="card" onclick="chooseGender('girls')">👧<br>BABAYE</button>
-  </div>
-  <button class="secondary" onclick="show('grades')">← BALIK SA GRADO</button>
- </div>
+<div class="content">
+<h1>PILIA ANG KARAKTER</h1>
+<p id="gradeLabel"></p>
+<div class="cards">
+<button class="card" onclick="chooseGender('boys')">👦<br>LALAKI</button>
+<button class="card" onclick="chooseGender('girls')">👧<br>BABAYE</button>
+</div>
+<button class="secondary" onclick="go('grades')">← BALIK</button>
+</div>
 </section>
 
 <section id="characters" class="screen">
- <div class="content">
-  <h1>PILIA ANG NGALAN</h1>
-  <p id="characterLabel"></p>
-  <div id="nameCards" class="cards names"></div>
-  <div class="row">
-   <button class="secondary" onclick="show('gender')">← BALIK</button>
-  </div>
- </div>
+<div class="content">
+<h1>PILIA ANG NGALAN</h1>
+<p id="charLabel"></p>
+<div id="nameCards" class="cards names"></div>
+<button class="secondary" onclick="go('gender')">← BALIK</button>
+</div>
 </section>
 
 <section id="preview" class="screen">
- <div class="content">
-  <h1>IMONG KARAKTER</h1>
-  <p id="previewGrade"></p>
-  <div id="characterPreview" class="preview">
-   <div id="avatar" class="avatar">🧑</div>
-   <div id="previewName">KARAKTER</div>
-  </div>
-  <p id="previewDetails"></p>
-  <p id="specialNote" class="note"></p>
-  <div class="buttons">
-   <button onclick="confirmCharacter()">PILIUN NI NGA KARAKTER</button>
-   <button class="secondary" onclick="show('characters')">← ILISI ANG NGALAN</button>
-  </div>
- </div>
+<div class="content">
+<h1>IMONG KARAKTER</h1>
+<div id="prev" class="preview"><span id="avatar">🧑</span><strong id="prevName">KARAKTER</strong></div>
+<p id="prevInfo"></p><p id="special" class="small"></p>
+<div class="buttons">
+<button onclick="startGame()">PILI-A UG SUGDI</button>
+<button class="secondary" onclick="go('characters')">← ILISI ANG NGALAN</button>
+</div>
+</div>
 </section>
 
 <section id="ready" class="screen">
- <div class="content">
-  <h1>KARAKTER NAPILI!</h1>
-  <div class="preview">
-   <div id="readyAvatar" class="avatar">🧑</div>
-   <div id="readyName"></div>
-  </div>
-  <p id="readyDetails"></p>
-  <p>Andam na ang imong karakter.</p>
-  <p class="note">Ang aktuwal nga panagsangka ug mga mapa idugang sa sunod nga mga lakang.</p>
-  <div class="buttons">
-   <button onclick="show('grades')">PAG-USAB SA KARAKTER</button>
-   <button class="secondary" onclick="show('menu')">BALIK SA MAIN MENU</button>
-  </div>
- </div>
+<div class="content">
+<h1>ANDAM NA!</h1>
+<div class="preview"><span id="readyAvatar">🧑</span><strong id="readyName"></strong></div>
+<p id="readyInfo"></p>
+<button onclick="startGame()">SUGDI ANG DULA</button>
+<button class="secondary" onclick="go('grades')">ILISI ANG KARAKTER</button>
+<button class="secondary" onclick="go('menu')">MAIN MENU</button>
+</div>
 </section>
 
 <section id="shop" class="screen">
- <div class="content">
-  <h1>TINDAHAN</h1>
-  <p>Ang sistema sa armas ug pagpalit idugang sa sunod nga mga lakang.</p>
-  <button onclick="show('menu')">← BALIK</button>
- </div>
+<div class="content">
+<h1>⚒ TINDAHAN</h1>
+<p>Kwarta: <strong id="coins">0</strong></p>
+<div id="shopItems"></div>
+<button class="secondary" onclick="go('menu')">← BALIK</button>
+</div>
 </section>
 
 <section id="settings" class="screen">
- <div class="content">
-  <h1>MGA SETTING</h1>
-  <p><label><input id="sound" type="checkbox" checked> Tingog sa mga buton</label></p>
-  <p><label><input id="vibration" type="checkbox"> Pagkurog sa telepono</label></p>
-  <button onclick="show('menu')">← BALIK</button>
- </div>
+<div class="content panel">
+<h1>MGA SETTING</h1>
+<p><label><input id="sound" type="checkbox" checked> Tingog sa dula</label></p>
+<p><label><input id="yawa" type="checkbox" checked> “Yawa” nga tingog matag 3 segundos</label></p>
+<p>Gidak-on sa tingog</p>
+<input id="volume" type="range" min="0" max="100" value="35">
+<p class="small">Ang tingog gihimo pinaagi sa browser.</p>
+<button onclick="go('menu')">HUMAN</button>
+</div>
+</section>
+
+<section id="game" class="screen">
+<canvas id="cv"></canvas>
+<div class="hud">
+<div class="top">
+<div class="info">
+<span id="levelText">LEVEL 1 / 6</span><br><span id="playerHud"></span>
+<div class="hp"><div id="hpfill"></div></div><span id="hpText">100 HP</span>
+</div>
+<div class="info" id="stats">ZOMBIE: 0</div>
+<button onclick="pauseGame()">PAUSE</button>
+</div>
+<div class="controls">
+<div id="joy"><div id="knob"></div></div>
+<div id="aim"></div>
+<button id="attack">ATTAKE</button>
+</div>
+</div>
+<div id="overlay" class="overlay" style="display:none">
+<div class="panel">
+<h1 id="ovTitle">PAUSE</h1><p id="ovText"></p><div id="ovButtons" class="buttons"></div>
+</div>
+</div>
 </section>
 
 <script>
-const students = {
- 7:{
-  boys:["CYBER JAMES","STEVE","IZZY","RENIEL","CLARENCE"],
-  girls:["LIEZEL","JILLIAN","ALMA","MICHELE","DONA"]
- },
- 8:{
-  boys:["NYGIEN","RHENO","HMD","KTH","LDRO"],
-  girls:["XYHH","ASH","JHAR","MITCHKIER","HYRIS"]
- },
- 9:{
-  boys:["JDE","RALPH","DONG²","CHPI","MRK"],
-  girls:["Y","V","G","J"]
- },
- 10:{
-  boys:["JOHN REYNARD","ARCHEL","CARL","RHEY","JOHNSON","CRISTIAN","RHAMCES","JESTER","SHERWIN","JULIUS","ARCHGEL","KENTH","RENCEY","ELMER","REX","JCKENT"],
-  girls:["ALMAE","SUNCH","SHNY","JESS","ALYH","ALYNAH","YUM","DAR","SAM","IRA"]
- },
- 11:{
-  boys:["ALR","RIT","N","L","C"],
-  girls:["R","M","J","JAN","DAC"]
- },
- 12:{
-  boys:["SAM","KEN","MARK","ARV","CYJIE"],
-  girls:["P","J","PR"]
- }
+"use strict";
+const students={
+7:{boys:["CYBER JAMES","STEVE","IZZY","RENIEL","CLARENCE"],girls:["LIEZEL","JILLIAN","ALMA","MICHELE","DONA"]},
+8:{boys:["NYGIEN","RHENO","HMD","KTH","LDRO"],girls:["XYHH","ASH","JHAR","MITCHKIER","HYRIS"]},
+9:{boys:["JDE","RALPH","DONG²","CHPI","MRK"],girls:["Y","V","G","J"]},
+10:{boys:["JOHN REYNARD","ARCHEL","CARL","RHEY","JOHNSON","CRISTIAN","RHAMCES","JESTER","SHERWIN","JULIUS","ARCHGEL","KENTH","RENCEY","ELMER","REX","JCKENT"],girls:["ALMAE","SUNCH","SHNY","JESS","ALYH","ALYNAH","YUM","DAR","SAM","IRA"]},
+11:{boys:["ALR","RIT","N","L","C"],girls:["R","M","J","JAN","DAC"]},
+12:{boys:["SAM","KEN","MARK","ARV","CYJIE"],girls:["P","J","PR"]}
 };
+const weapons=[
+{name:"CHALK",damage:10,cost:0,range:170,rate:430},
+{name:"LIBRO",damage:16,cost:30,range:195,rate:390},
+{name:"BAG",damage:22,cost:65,range:220,rate:360},
+{name:"LAPTOP",damage:30,cost:120,range:250,rate:330},
+{name:"PAPER BALL",damage:13,cost:20,range:270,rate:250},
+{name:"BENCH",damage:38,cost:180,range:150,rate:520}
+];
+let grade=7,gender="boys",student="",coins=0,weaponIndex=0;
+let game=null,raf=0,paused=false,joy={x:0,y:0},aim={x:1,y:0},attackHeld=false;
+let lastAttack=0,lastYawa=0,lastFrame=0;
 
-let selectedGrade = 7;
-let selectedGender = "boys";
-let selectedName = "";
-
-function show(id){
- document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- window.scrollTo(0,0);
+const $=id=>document.getElementById(id);
+function go(id){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+$(id).classList.add("active");
+if(id==="grades")renderGrades();
 }
-
-function makeGrades(){
- const box=document.getElementById("gradeCards");
- for(let grade=7;grade<=12;grade++){
-  const b=document.createElement("button");
-  b.className="card";
-  b.textContent="GRADE "+grade;
-  b.onclick=()=>{
-   selectedGrade=grade;
-   document.getElementById("gradeLabel").textContent="GRADE "+grade;
-   show("gender");
-  };
-  box.appendChild(b);
- }
+function renderGrades(){
+const box=$("gradeCards");box.innerHTML="";
+for(let g=7;g<=12;g++){
+const b=document.createElement("button");b.className="card";b.textContent="GRADE "+g;
+b.onclick=()=>{grade=g;$("gradeLabel").textContent="GRADE "+g;go("gender")};box.appendChild(b);
+}}
+function chooseGender(g){
+gender=g;$("charLabel").textContent="GRADE "+grade+" • "+(g==="boys"?"LALAKI":"BABAYE");
+const box=$("nameCards");box.innerHTML="";
+students[grade][g].forEach(name=>{
+const b=document.createElement("button");b.className="card";b.textContent=name;
+b.onclick=()=>{student=name;updatePreview();go("preview")};box.appendChild(b);
+});go("characters");
 }
-
-function chooseGender(gender){
- selectedGender=gender;
- const names=students[selectedGrade][gender];
- document.getElementById("characterLabel").textContent=
-  "GRADE "+selectedGrade+" • "+(gender==="boys"?"LALAKI":"BABAYE");
- const box=document.getElementById("nameCards");
- box.innerHTML="";
- names.forEach(name=>{
-  const b=document.createElement("button");
-  b.className="card";
-  b.textContent=name;
-  b.onclick=()=>{
-   selectedName=name;
-   updatePreview();
-   show("preview");
-  };
-  box.appendChild(b);
- });
- show("characters");
-}
-
 function updatePreview(){
- const specialBlue=selectedGrade===10&&selectedName==="JOHN REYNARD";
- const specialPurple=selectedGrade===8&&selectedName==="XYHH";
- const preview=document.getElementById("characterPreview");
- preview.className="preview";
- if(specialBlue) preview.classList.add("special-blue");
- if(specialPurple) preview.classList.add("special-purple");
- document.getElementById("avatar").textContent=
-  selectedGender==="boys"?"🧑":"👩";
- document.getElementById("previewName").textContent=selectedName;
- document.getElementById("previewGrade").textContent="GRADE "+selectedGrade;
- document.getElementById("previewDetails").textContent=
-  (selectedGender==="boys"?"Lalaki":"Babaye")+" • Grade "+selectedGrade;
- document.getElementById("specialNote").textContent=
-  specialBlue?"ESPESYAL NGA KARAKTER • BLUE THEME":
-  specialPurple?"ESPESYAL NGA KARAKTER • PURPLE THEME":
-  "Estudyante sa New Israel High School";
+let blue=grade===10&&student==="JOHN REYNARD";
+let purple=grade===8&&student==="XYHH";
+$("prev").className="preview"+(blue?" blue":purple?" purple":"");
+$("avatar").textContent=gender==="boys"?"🧑":"👩";
+$("prevName").textContent=student;
+$("prevInfo").textContent="GRADE "+grade+" • "+(gender==="boys"?"LALAKI":"BABAYE");
+$("special").textContent=blue?"ESPESYAL NGA KARAKTER • BLUE THEME":purple?"ESPESYAL NGA KARAKTER • PURPLE THEME":"ESTUDYANTE SA NIHS";
 }
-
-function confirmCharacter(){
- document.getElementById("readyAvatar").textContent=
-  selectedGender==="boys"?"🧑":"👩";
- document.getElementById("readyName").textContent=selectedName;
- document.getElementById("readyDetails").textContent=
-  "Grade "+selectedGrade+" • "+(selectedGender==="boys"?"Lalaki":"Babaye");
- show("ready");
+function startGame(){
+$("readyAvatar").textContent=gender==="boys"?"🧑":"👩";
+$("readyName").textContent=student;
+$("readyInfo").textContent="GRADE "+grade+" • "+(gender==="boys"?"LALAKI":"BABAYE");
+weaponIndex=0;go("game");newLevel(1);
 }
-
-document.querySelectorAll("button").forEach(button=>{
- button.addEventListener("click",()=>{
-  if(document.getElementById("sound")?.checked &&
-     document.getElementById("vibration")?.checked &&
-     navigator.vibrate) navigator.vibrate(15);
- });
+function shopRender(){
+$("coins").textContent=coins;
+const box=$("shopItems");box.innerHTML="";
+weapons.forEach((w,i)=>{
+const b=document.createElement("button");
+b.className="card";b.style.width="100%";b.style.margin="4px 0";
+b.textContent=w.name+" • DAMAGE "+w.damage+" • "+w.cost+" KWARTA"+(i===weaponIndex?" • NAGAMIT":"");
+b.onclick=()=>{
+if(i===0){weaponIndex=0;shopRender();return}
+if(coins>=w.cost){coins-=w.cost;weaponIndex=i;shopRender();sound(300,0.07)}
+else{b.textContent="KULANG ANG KWARTA! • "+w.cost+" GIKINAHANGLAN";setTimeout(shopRender,1000)}
+};box.appendChild(b);
 });
-
-makeGrades();
+}
+function sound(freq=260,duration=.06){
+if(!$("sound").checked)return;
+try{
+const AC=window.AudioContext||window.webkitAudioContext;
+if(!AC)return;
+const c=new AC(),o=c.createOscillator(),g=c.createGain();
+o.frequency.value=freq;g.gain.value=Number($("volume").value)/100*.08;
+o.connect(g);g.connect(c.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,c.currentTime+duration);o.stop(c.currentTime+duration);o.onended=()=>c.close();
+}catch(e){}
+}
+const canvas=$("cv"),ctx=canvas.getContext("2d");
+function resize(){
+const r=canvas.getBoundingClientRect();canvas.width=Math.max(1,r.width*devicePixelRatio);canvas.height=Math.max(1,r.height*devicePixelRatio);
+}
+window.addEventListener("resize",resize);
+function newLevel(n){
+if(raf)cancelAnimationFrame(raf);
+paused=false;
+game={level:n,hp:100,x:0,y:0,zombies:[],shots:[],lastSpawn:0,kills:0,done:false};
+resize();game.x=canvas.width/2;game.y=canvas.height/2;
+$("overlay").style.display="none";$("levelText").textContent="LEVEL "+n+" / 6";
+$("playerHud").textContent=student;$("hpfill").style.width="100%";
+$("hpText").textContent="100 HP";$("stats").textContent="ZOMBIE: 0";
+for(let i=0;i<Math.min(3+n,9);i++)spawnZombie();
+lastFrame=performance.now();raf=requestAnimationFrame(loop);
+}
+function spawnZombie(){
+if(!game)return;
+const w=canvas.width,h=canvas.height;
+let x=Math.random()*w,y=Math.random()*h;
+if(Math.hypot(x-game.x,y-game.y)<w*.25){x=(x+w*.6)%w;y=(y+h*.6)%h}
+game.zombies.push({x,y,hp:25+game.level*12,max:25+game.level*12,speed:(.35+game.level*.07)*devicePixelRatio,hit:0});
+}
+function loop(now){
+if(!game||paused||game.done)return;
+const dt=Math.min(2,(now-lastFrame)/16.67);lastFrame=now;
+const w=canvas.width,h=canvas.height;
+game.x=Math.max(20,Math.min(w-20,game.x+joy.x*3.1*devicePixelRatio*dt));
+game.y=Math.max(50,Math.min(h-20,game.y+joy.y*3.1*devicePixelRatio*dt));
+if(now-game.lastSpawn>Math.max(1100,2800-game.level*250)&&game.zombies.length<5+game.level*2){spawnZombie();game.lastSpawn=now}
+if(attackHeld&&now-lastAttack>weapons[weaponIndex].rate){attack(now);lastAttack=now}
+if($("yawa").checked&&now-lastYawa>3000){sound(100,.12);lastYawa=now}
+game.zombies.forEach(z=>{
+let dx=game.x-z.x,dy=game.y-z.y,d=Math.hypot(dx,dy)||1;
+if(d>23*devicePixelRatio){z.x+=dx/d*z.speed*dt;z.y+=dy/d*z.speed*dt}
+else if(now-z.hit>700){game.hp-=4;z.hit=now}
+});
+game.shots.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.life-=dt});
+game.shots=game.shots.filter(s=>s.life>0);
+for(const s of game.shots){
+for(const z of game.zombies){
+if(z.hp>0&&Math.hypot(s.x-z.x,s.y-z.y)<18*devicePixelRatio){z.hp-=s.damage;s.life=0;break}
+}}
+game.zombies=game.zombies.filter(z=>z.hp>0);
+game.kills+=(0);
+if(game.hp<=0){game.hp=0;endGame(false);return}
+if(game.zombies.length===0&&game.kills>=3+game.level){if(game.level<6){game.done=true;showOverlay("LEVEL HUMAN","Maayo! Nakalahutay ka sa level "+game.level+".",[
+["SUNOD NGA LEVEL",()=>newLevel(game.level+1)],["BALIK SA MENU",()=>go("menu")]
+]);return}else{endGame(true);return}}
+draw();
+$("hpfill").style.width=game.hp+"%";$("hpText").textContent=Math.ceil(game.hp)+" HP";
+$("stats").textContent="ZOMBIE: "+game.zombies.length+" • NAPILDE: "+game.kills;
+raf=requestAnimationFrame(loop);
+}
+function attack(now){
+if(!game)return;
+sound(440,.05);
+const w=weapons[weaponIndex],px=game.x,py=game.y;
+if(weaponIndex===5){
+let z=game.zombies.find(z=>Math.hypot(z.x-px,z.y-py)<w.range*devicePixelRatio);
+if(z)z.hp-=w.damage;
+}else{
+game.shots.push({x:px,y:py,vx:aim.x*7*devicePixelRatio,vy:aim.y*7*devicePixelRatio,damage:w.damage,life:w.range/(7*devicePixelRatio)});
+}
+}
+function draw(){
+const w=canvas.width,h=canvas.height;
+ctx.clearRect(0,0,w,h);
+ctx.fillStyle="#101b23";ctx.fillRect(0,0,w,h);
+const tile=48*devicePixelRatio;
+ctx.strokeStyle="#293944";ctx.lineWidth=1;
+for(let x=0;x<w;x+=tile){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+for(let y=0;y<h;y+=tile){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ctx.fillStyle="#4b382b";
+ctx.fillRect(w*.12,h*.2,70*devicePixelRatio,25*devicePixelRatio);
+ctx.fillRect(w*.72,h*.65,70*devicePixelRatio,25*devicePixelRatio);
+game.shots.forEach(s=>{ctx.fillStyle="#ffed78";ctx.beginPath();ctx.arc(s.x,s.y,5*devicePixelRatio,0,Math.PI*2);ctx.fill()});
+game.zombies.forEach(z=>{
+ctx.fillStyle="#3d7a4e";ctx.beginPath();ctx.arc(z.x,z.y,13*devicePixelRatio,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="#ff6262";ctx.fillRect(z.x-12*devicePixelRatio,z.y-21*devicePixelRatio,24*devicePixelRatio,3*devicePixelRatio);
+ctx.fillStyle="#50ee80";ctx.fillRect(z.x-12*devicePixelRatio,z.y-21*devicePixelRatio,24*devicePixelRatio*Math.max(0,z.hp/z.max),3*devicePixelRatio);
+ctx.fillStyle="#fff";ctx.fillRect(z.x-5*devicePixelRatio,z.y-4*devicePixelRatio,3*devicePixelRatio,3*devicePixelRatio);ctx.fillRect(z.x+3*devicePixelRatio,z.y-4*devicePixelRatio,3*devicePixelRatio,3*devicePixelRatio);
+});
+ctx.fillStyle=grade===10&&student==="JOHN REYNARD"?"#258bff":grade===8&&student==="XYHH"?"#bd70ff":"#45d9ff";
+ctx.beginPath();ctx.arc(game.x,game.y,14*devicePixelRatio,0,Math.PI*2);ctx.fill();
+ctx.fillStyle="#fff";ctx.font=(11*devicePixelRatio)+"px Arial";ctx.textAlign="center";
+ctx.fillText(student,game.x,game.y-20*devicePixelRatio);
+}
+function showOverlay(title,msg,buttons){
+paused=true;if(raf)cancelAnimationFrame(raf);
+$("ovTitle").textContent=title;$("ovText").textContent=msg;
+const box=$("ovButtons");box.innerHTML="";
+buttons.forEach(([label,fn])=>{const b=document.createElement("button");b.textContent=label;b.onclick=fn;box.appendChild(b)});
+$("overlay").style.display="flex";
+}
+function pauseGame(){
+if(!game||game.done)return;
+showOverlay("PAUSE","Pahuway sa kadiyot.",[
+["PADAYON",()=>{paused=false;$("overlay").style.display="none";lastFrame=performance.now();raf=requestAnimationFrame(loop)}],
+["BALIK SA MENU",()=>{paused=true;go("menu")}]
+]);
+}
+function endGame(win){
+if(!game||game.done)return;game.done=true;paused=true;
+if(raf)cancelAnimationFrame(raf);
+if(win)coins+=100;
+showOverlay(win?"DAUG KA!":"PILDE KA!",win?"Nakalahutay ka sa tanang unom ka level! Nakadawat ka og 100 kwarta.":"Nahurot ang imong kusog. Sulayi pag-usab!",[
+["DULA PAG-USAB",()=>newLevel(1)],["BALIK SA MENU",()=>go("menu")]
+]);
+}
+$("joy").addEventListener("pointerdown",e=>{joyPointer=e.pointerId;$("joy").setPointerCapture(e.pointerId);moveJoy(e)});
+function moveJoy(e){
+const r=$("joy").getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+let dx=(e.clientX-cx)/(r.width*.34),dy=(e.clientY-cy)/(r.height*.34),d=Math.hypot(dx,dy)||1;
+joy={x:dx/d*Math.min(1,d),y:dy/d*Math.min(1,d)};
+$("knob").style.left=(32+joy.x*28)+"px";$("knob").style.top=(32+joy.y*28)+"px";
+}
+$("joy").addEventListener("pointermove",e=>{if(e.pointerId===joyPointer)moveJoy(e)});
+function stopJoy(){joyPointer=null;joy={x:0,y:0};$("knob").style.left="32px";$("knob").style.top="32px"}
+$("joy").addEventListener("pointerup",stopJoy);$("joy").addEventListener("pointercancel",stopJoy);
+$("aim").addEventListener("pointerdown",e=>{aimPointer=e.pointerId;$("aim").setPointerCapture(e.pointerId);moveAim(e)});
+$("aim").addEventListener("pointermove",e=>{if(e.pointerId===aimPointer)moveAim(e)});
+function moveAim(e){
+if(!game)return;let dx=e.clientX-innerWidth/2,dy=e.clientY-innerHeight/2,d=Math.hypot(dx,dy)||1;aim={x:dx/d,y:dy/d};
+}
+$("aim").addEventListener("pointerup",()=>aimPointer=null);
+$("attack").addEventListener("pointerdown",e=>{attackHeld=true;try{$("attack").setPointerCapture(e.pointerId)}catch(_){}});
+$("attack").addEventListener("pointerup",()=>attackHeld=false);
+$("attack").addEventListener("pointercancel",()=>attackHeld=false);
+window.addEventListener("keydown",e=>{
+if(e.key==="Escape"&&game&&!paused)pauseGame();
+if(e.key==="ArrowUp"||e.key==="w")joy.y=-1;
+if(e.key==="ArrowDown"||e.key==="s")joy.y=1;
+if(e.key==="ArrowLeft"||e.key==="a")joy.x=-1;
+if(e.key==="ArrowRight"||e.key==="d")joy.x=1;
+if(e.code==="Space")attackHeld=true;
+});
+window.addEventListener("keyup",e=>{
+if(["ArrowUp","ArrowDown","w","s"].includes(e.key))joy.y=0;
+if(["ArrowLeft","ArrowRight","a","d"].includes(e.key))joy.x=0;
+if(e.code==="Space")attackHeld=false;
+});
+renderGrades();
 </script>
 </body>
 </html>
