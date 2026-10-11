@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="ceb">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+        maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <title>NEW ISRAEL HIGH SCHOOL ZOMBIE'S</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    #game {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .intro {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+      opacity: 0;
+      animation: reveal 2.5s ease forwards;
+    }
+
+    .studio {
+      color: #8baeff;
+      font-size: clamp(11px, 2vw, 15px);
+      letter-spacing: 5px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      max-width: 800px;
+      margin: 0;
+      font-size: clamp(24px, 5vw, 54px);
+      letter-spacing: 2px;
+      line-height: 1.25;
+      text-shadow: 0 0 22px #163d88;
+    }
+
+    .subtitle {
+      margin-top: 14px;
+      color: #8994a8;
+      font-size: clamp(11px, 2vw, 15px);
+      letter-spacing: 4px;
+    }
+
+    .credit {
+      position: absolute;
+      bottom: 24px;
+      color: #667085;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (orientation: portrait) {
+      #game::after {
+        content: "Palihog ipahigda ang imong cellphone.";
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: #000;
+        color: #b6c8ff;
+        text-align: center;
+        font-size: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro {
+        animation-duration: 0.1s;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main id="game">
+    <section class="intro" aria-label="Pasiunang screen">
+      <div class="studio">USA KA DULA SA NIHS</div>
+
+      <h1>NEW ISRAEL HIGH SCHOOL<br>ZOMBIE'S</h1>
+
+      <div class="subtitle">ANG PAGSUGOD SA KALISOD</div>
+
+      <div class="credit">G I H I M O  N I  J O H N  R E Y N A R D</div>
+    </section>
+  </main>
+</body>
+</html>
