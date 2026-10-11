@@ -3,496 +3,261 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEW ISRAEL HIGH SCHOOL ZOMBIE'S</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NIHS Zombie School</title>
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  background: #030609;
-  color: white;
-  font-family: Arial, sans-serif;
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-button {
-  border: 1px solid #76e7ff;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #087aab, #4221a5);
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  padding: 14px 22px;
-  cursor: pointer;
-  box-shadow: 0 0 18px #087aab66;
-  transition: .2s;
-}
-
-button:active {
-  transform: scale(.95);
-}
-
-button:hover {
-  filter: brightness(1.25);
-}
-
-.screen {
-  display: none;
-  width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
-  padding: 20px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  position: relative;
-  overflow: auto;
-}
-
-.screen.active {
-  display: flex;
-  animation: fadeIn .6s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* INTRO */
-#intro {
-  flex-direction: column;
-  gap: 20px;
-  background: #000;
-}
-
-.logo {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  border-radius: 50%;
-  border: 2px solid #56dfff;
-  box-shadow: 0 0 30px #00bfff99;
-}
-
-#intro h1 {
-  font-size: clamp(22px, 5vw, 42px);
-  color: #65eaff;
-  text-shadow: 0 0 20px #008cff;
-}
-
-#intro p {
-  color: #b8c8d7;
-  max-width: 480px;
-  line-height: 1.6;
-}
-
-.loading {
-  width: 200px;
-  height: 5px;
-  background: #17232d;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.loading span {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: #4beaff;
-  animation: load 2s forwards;
-}
-
-@keyframes load {
-  to { width: 100%; }
-}
-
-/* MAIN MENU BACKGROUND */
-#menu, #shop, #settings, #play {
-  flex-direction: column;
-  gap: 18px;
-  background:
-    linear-gradient(#02070ad9, #02070af2),
-    repeating-linear-gradient(
-      90deg,
-      #18232c 0px,
-      #18232c 60px,
-      #0a1118 61px,
-      #0a1118 120px
-    );
-}
-
-.school-scene {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  opacity: .65;
-}
-
-.light {
-  position: absolute;
-  top: 0;
-  left: 10%;
-  width: 80%;
-  height: 45%;
-  background: radial-gradient(ellipse, #146a8460, transparent 70%);
-}
-
-.floor {
-  position: absolute;
-  bottom: 0;
-  height: 30%;
-  width: 100%;
-  background: repeating-linear-gradient(
-    0deg,
-    #111a20,
-    #111a20 35px,
-    #26343d 37px,
-    #10171d 40px
-  );
-  transform: perspective(180px) rotateX(8deg);
-}
-
-.desk {
-  position: absolute;
-  bottom: 14%;
-  width: 95px;
-  height: 32px;
-  background: #493a2b;
-  border: 3px solid #765a3a;
-  box-shadow: 0 10px 0 #171b1e;
-  transform: skewY(-4deg);
-}
-
-.desk.one { left: 5%; }
-.desk.two { right: 7%; bottom: 20%; }
-.desk.three { left: 35%; bottom: 8%; }
-
-.zombie {
-  position: absolute;
-  width: 45px;
-  height: 95px;
-  left: 50%;
-  bottom: 18%;
-  transform: translateX(-50%);
-  opacity: .8;
-  filter: drop-shadow(0 0 12px #45ff9a55);
-  animation: sway 3s ease-in-out infinite;
-}
-
-.zombie .head {
-  width: 35px;
-  height: 38px;
-  margin: auto;
-  border-radius: 45% 45% 35% 35%;
-  background: #263b31;
-  border: 2px solid #4c725a;
-}
-
-.zombie .body {
-  width: 35px;
-  height: 48px;
-  margin: 2px auto;
-  background: #17271f;
-  border: 2px solid #334c3b;
-  border-radius: 8px 8px 2px 2px;
-}
-
-@keyframes sway {
-  0%,100% { transform: translateX(-50%) rotate(-3deg); }
-  50% { transform: translateX(-50%) rotate(4deg); }
-}
-
-.menu-content {
-  z-index: 2;
-  width: min(100%, 430px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.eyebrow {
-  color: #65eaff;
-  font-size: 11px;
-  letter-spacing: 5px;
-  font-weight: bold;
-}
-
-.game-title {
-  font-size: clamp(27px, 7vw, 46px);
-  line-height: 1.1;
-  text-transform: uppercase;
-  color: #f1f8ff;
-  text-shadow: 0 0 8px #00baff, 0 0 24px #0073ff;
-}
-
-.game-title span {
-  color: #66f0ad;
-}
-
-.subtitle {
-  color: #b1c0cb;
-  font-size: 13px;
-  letter-spacing: 2px;
-}
-
-.menu-buttons {
-  display: flex;
-  flex-direction: column;
-  width: min(100%, 280px);
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.menu-buttons button {
-  width: 100%;
-}
-
-.secondary {
-  background: #101923e8;
-  border-color: #475c6d;
-  box-shadow: none;
-}
-
-.footer {
-  color: #778c9a;
-  font-size: 11px;
-  margin-top: 10px;
-}
-
-.panel {
-  z-index: 2;
-  width: min(100%, 430px);
-  padding: 25px;
-  border: 1px solid #345a70;
-  border-radius: 20px;
-  background: #07121beF;
-  box-shadow: 0 0 35px #008cff22;
-}
-
-.panel h2 {
-  color: #68eaff;
-  margin-bottom: 20px;
-}
-
-.panel p {
-  color: #c5d1dc;
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-
-.panel button {
-  margin: 5px;
-}
-
-.setting-row {
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  background: #142330;
-  color: #d7e7f2;
-  text-align: left;
-  font-size: 14px;
-}
-
-.small-note {
-  color: #9baebc;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-@media (orientation: landscape) and (max-height: 500px) {
-  .screen { padding: 10px; }
-  .menu-content { gap: 8px; }
-  .menu-buttons {
-    flex-direction: row;
-    width: min(100%, 460px);
-  }
-  .menu-buttons button {
-    padding: 12px 8px;
-    font-size: 13px;
-  }
-  .logo { width: 75px; height: 75px; }
-  .panel { padding: 14px; }
-}
+*{box-sizing:border-box}
+body{margin:0;background:#030711;color:#fff;font-family:Arial,sans-serif}
+button,select{font:inherit}
+button{padding:13px 17px;border:1px solid #46d9ff;border-radius:12px;background:linear-gradient(135deg,#087da7,#4822a6);color:white;font-weight:bold;cursor:pointer}
+button:active{transform:scale(.97)}
+.screen{display:none;min-height:100dvh;padding:20px;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at top,#132b4a,#030711 70%)}
+.screen.active{display:flex;animation:fade .3s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.content{width:min(100%,520px);margin:auto}
+h1{color:#71eaff;text-shadow:0 0 16px #008bff;font-size:clamp(25px,6vw,40px)}
+h2{color:#79eaff}
+p{color:#c3d3e1;line-height:1.5}
+.logo{width:95px;height:95px;object-fit:contain;border-radius:50%;border:2px solid #53dcff}
+.buttons{display:grid;gap:12px;width:min(100%,330px);margin:22px auto}
+.secondary{background:#101d2c;border-color:#455b76}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+.card{min-height:75px;padding:12px 5px;background:#0d1c2c;border:1px solid #304b65;border-radius:13px;color:white;font-weight:bold;cursor:pointer}
+.card.selected{border:2px solid #72eaff;box-shadow:0 0 15px #00aaff55;background:#13304a}
+.names{grid-template-columns:repeat(2,minmax(0,1fr))}
+.names .card{min-height:54px;overflow-wrap:anywhere}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px}
+.row button{flex:1;min-width:110px}
+.preview{width:145px;height:165px;margin:16px auto;border-radius:20px;border:2px solid #5ee7ff;background:linear-gradient(#102941,#080d19);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.avatar{font-size:66px;filter:drop-shadow(0 0 12px #36cfff)}
+#previewName{font-weight:bold;font-size:18px;overflow-wrap:anywhere}
+.special-blue{border-color:#258bff;box-shadow:0 0 25px #167bff77}
+.special-purple{border-color:#be63ff;box-shadow:0 0 25px #a02dff77}
+.note{font-size:12px;color:#8ea7bd}
+@media(max-width:350px){.cards{gap:6px}.card{font-size:12px;padding:9px 3px}}
 </style>
 </head>
-
 <body>
 
-<!-- INTRO SCREEN -->
 <section id="intro" class="screen active">
-  <img class="logo" src="./nihs-logo.jpg"
-       alt="NIHS School Logo"
-       onerror="this.style.display='none'">
-
-  <div class="eyebrow">PRESENTS</div>
-
+ <div class="content">
+  <img src="./nihs-logo.jpg" class="logo" alt="NIHS logo" onerror="this.style.display='none'">
   <h1>NEW ISRAEL<br>HIGH SCHOOL ZOMBIE'S</h1>
-
-  <p>
-    Usa ka eskwelahan nga nahimong dapit sa kalisang.
-    Andam ka ba nga makalahutay?
-  </p>
-
-  <p class="small-note">
-    Dula lamang kini nga hinimo-himo. Walay tinuod nga tawo
-    o panghitabo nga gihulagway.
-  </p>
-
-  <div class="loading"><span></span></div>
-  <p class="small-note">Gipalambo ni John Reynard</p>
+  <p>Makalahutay sa eskwelahan!</p>
+  <p class="note">Dula lamang kini nga hinimo-himo.</p>
+  <p>Gipalambo ni John Reynard</p>
+  <button onclick="show('menu')">SUGOD</button>
+ </div>
 </section>
 
-<!-- MAIN MENU -->
 <section id="menu" class="screen">
-  <div class="school-scene">
-    <div class="light"></div>
-    <div class="floor"></div>
-    <div class="desk one"></div>
-    <div class="desk two"></div>
-    <div class="desk three"></div>
-    <div class="zombie">
-      <div class="head"></div>
-      <div class="body"></div>
-    </div>
+ <div class="content">
+  <p class="note">NIHS • SURVIVAL PROJECT</p>
+  <h1>ZOMBIE<br>SCHOOL</h1>
+  <p>Andam na ba ka nga makalahutay?</p>
+  <div class="buttons">
+   <button onclick="show('grades')">▶ DULA NA</button>
+   <button class="secondary" onclick="show('shop')">TINDAHAN</button>
+   <button class="secondary" onclick="show('settings')">MGA SETTING</button>
   </div>
-
-  <div class="menu-content">
-    <div class="eyebrow">NIHS • SURVIVAL PROJECT</div>
-
-    <h1 class="game-title">
-      ZOMBIE<br><span>SCHOOL</span>
-    </h1>
-
-    <p class="subtitle">MAKALAHUTAY SA ESKWELAHAN</p>
-
-    <div class="menu-buttons">
-      <button onclick="openScreen('play')">▶ DULA NA</button>
-      <button class="secondary" onclick="openScreen('shop')">
-        ⚒ TINDAHAN
-      </button>
-      <button class="secondary" onclick="openScreen('settings')">
-        ⚙ MGA SETTING
-      </button>
-    </div>
-
-    <p class="footer">DEVELOPED BY JOHN REYNARD</p>
-  </div>
+  <p class="note">DEVELOPED BY JOHN REYNARD</p>
+ </div>
 </section>
 
-<!-- SHOP -->
+<section id="grades" class="screen">
+ <div class="content">
+  <h1>PILIA ANG GRADO</h1>
+  <p>Unsa nga grado ka magdula?</p>
+  <div id="gradeCards" class="cards"></div>
+  <button class="secondary" onclick="show('menu')">← BALIK</button>
+ </div>
+</section>
+
+<section id="gender" class="screen">
+ <div class="content">
+  <h1>PILIA ANG KARAKTER</h1>
+  <p id="gradeLabel"></p>
+  <div class="cards">
+   <button class="card" onclick="chooseGender('boys')">👦<br>LALAKI</button>
+   <button class="card" onclick="chooseGender('girls')">👧<br>BABAYE</button>
+  </div>
+  <button class="secondary" onclick="show('grades')">← BALIK SA GRADO</button>
+ </div>
+</section>
+
+<section id="characters" class="screen">
+ <div class="content">
+  <h1>PILIA ANG NGALAN</h1>
+  <p id="characterLabel"></p>
+  <div id="nameCards" class="cards names"></div>
+  <div class="row">
+   <button class="secondary" onclick="show('gender')">← BALIK</button>
+  </div>
+ </div>
+</section>
+
+<section id="preview" class="screen">
+ <div class="content">
+  <h1>IMONG KARAKTER</h1>
+  <p id="previewGrade"></p>
+  <div id="characterPreview" class="preview">
+   <div id="avatar" class="avatar">🧑</div>
+   <div id="previewName">KARAKTER</div>
+  </div>
+  <p id="previewDetails"></p>
+  <p id="specialNote" class="note"></p>
+  <div class="buttons">
+   <button onclick="confirmCharacter()">PILIUN NI NGA KARAKTER</button>
+   <button class="secondary" onclick="show('characters')">← ILISI ANG NGALAN</button>
+  </div>
+ </div>
+</section>
+
+<section id="ready" class="screen">
+ <div class="content">
+  <h1>KARAKTER NAPILI!</h1>
+  <div class="preview">
+   <div id="readyAvatar" class="avatar">🧑</div>
+   <div id="readyName"></div>
+  </div>
+  <p id="readyDetails"></p>
+  <p>Andam na ang imong karakter.</p>
+  <p class="note">Ang aktuwal nga panagsangka ug mga mapa idugang sa sunod nga mga lakang.</p>
+  <div class="buttons">
+   <button onclick="show('grades')">PAG-USAB SA KARAKTER</button>
+   <button class="secondary" onclick="show('menu')">BALIK SA MAIN MENU</button>
+  </div>
+ </div>
+</section>
+
 <section id="shop" class="screen">
-  <div class="panel">
-    <h2>⚒ TINDAHAN</h2>
-
-    <p>
-      Dinhi ibutang ang mga armas, gamit ug mga butang
-      nga magamit sa imong paglahutay.
-    </p>
-
-    <div class="setting-row">✎ Krayola — moabot nga bahin</div>
-    <div class="setting-row">📚 Libro — moabot nga bahin</div>
-    <div class="setting-row">🎒 Bag — moabot nga bahin</div>
-
-    <p class="small-note">
-      Ang tinuod nga sistema sa pagpalit ug kadaot sa armas
-      himoon sa sunod nga mga lakang.
-    </p>
-
-    <button onclick="openScreen('menu')">← BALIK</button>
-  </div>
+ <div class="content">
+  <h1>TINDAHAN</h1>
+  <p>Ang sistema sa armas ug pagpalit idugang sa sunod nga mga lakang.</p>
+  <button onclick="show('menu')">← BALIK</button>
+ </div>
 </section>
 
-<!-- SETTINGS -->
 <section id="settings" class="screen">
-  <div class="panel">
-    <h2>⚙ MGA SETTING</h2>
-
-    <p>Mga kapilian sa dula</p>
-
-    <div class="setting-row">
-      <label>
-        <input id="soundToggle" type="checkbox" checked>
-        Tingog sa mga buton
-      </label>
-    </div>
-
-    <div class="setting-row">
-      <label>
-        <input id="vibrationToggle" type="checkbox">
-        Pagkurog sa telepono (kon suportado)
-      </label>
-    </div>
-
-    <p class="small-note">
-      Ang musika, tingog sa zombie ug uban pang kontrol
-      idugang sa sunod nga mga lakang.
-    </p>
-
-    <button onclick="openScreen('menu')">← BALIK</button>
-  </div>
-</section>
-
-<!-- PLAY PLACEHOLDER -->
-<section id="play" class="screen">
-  <div class="panel">
-    <h2>ANDAM NA BA KA?</h2>
-
-    <p>
-      Ang pagpili sa grado, karakter ug unang mapa
-      himoon sa sunod nga lakang.
-    </p>
-
-    <p class="small-note">
-      Wala pa nagsugod ang aktuwal nga panagsangka.
-    </p>
-
-    <button onclick="openScreen('menu')">← BALIK SA MENU</button>
-  </div>
+ <div class="content">
+  <h1>MGA SETTING</h1>
+  <p><label><input id="sound" type="checkbox" checked> Tingog sa mga buton</label></p>
+  <p><label><input id="vibration" type="checkbox"> Pagkurog sa telepono</label></p>
+  <button onclick="show('menu')">← BALIK</button>
+ </div>
 </section>
 
 <script>
-function openScreen(screenId) {
-  document.querySelectorAll('.screen').forEach(function(screen) {
-    screen.classList.remove('active');
-  });
+const students = {
+ 7:{
+  boys:["CYBER JAMES","STEVE","IZZY","RENIEL","CLARENCE"],
+  girls:["LIEZEL","JILLIAN","ALMA","MICHELE","DONA"]
+ },
+ 8:{
+  boys:["NYGIEN","RHENO","HMD","KTH","LDRO"],
+  girls:["XYHH","ASH","JHAR","MITCHKIER","HYRIS"]
+ },
+ 9:{
+  boys:["JDE","RALPH","DONG²","CHPI","MRK"],
+  girls:["Y","V","G","J"]
+ },
+ 10:{
+  boys:["JOHN REYNARD","ARCHEL","CARL","RHEY","JOHNSON","CRISTIAN","RHAMCES","JESTER","SHERWIN","JULIUS","ARCHGEL","KENTH","RENCEY","ELMER","REX","JCKENT"],
+  girls:["ALMAE","SUNCH","SHNY","JESS","ALYH","ALYNAH","YUM","DAR","SAM","IRA"]
+ },
+ 11:{
+  boys:["ALR","RIT","N","L","C"],
+  girls:["R","M","J","JAN","DAC"]
+ },
+ 12:{
+  boys:["SAM","KEN","MARK","ARV","CYJIE"],
+  girls:["P","J","PR"]
+ }
+};
 
-  const target = document.getElementById(screenId);
+let selectedGrade = 7;
+let selectedGender = "boys";
+let selectedName = "";
 
-  if (target) {
-    target.classList.add('active');
-  }
+function show(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ window.scrollTo(0,0);
 }
 
-function playClickSound() {
-  const soundToggle = document.getElementById('soundToggle');
-
-  if (soundToggle && soundToggle.checked &&
-      navigator.vibrate) {
-    navigator.vibrate(15);
-  }
+function makeGrades(){
+ const box=document.getElementById("gradeCards");
+ for(let grade=7;grade<=12;grade++){
+  const b=document.createElement("button");
+  b.className="card";
+  b.textContent="GRADE "+grade;
+  b.onclick=()=>{
+   selectedGrade=grade;
+   document.getElementById("gradeLabel").textContent="GRADE "+grade;
+   show("gender");
+  };
+  box.appendChild(b);
+ }
 }
 
-document.querySelectorAll('button').forEach(function(button) {
-  button.addEventListener('click', playClickSound);
+function chooseGender(gender){
+ selectedGender=gender;
+ const names=students[selectedGrade][gender];
+ document.getElementById("characterLabel").textContent=
+  "GRADE "+selectedGrade+" • "+(gender==="boys"?"LALAKI":"BABAYE");
+ const box=document.getElementById("nameCards");
+ box.innerHTML="";
+ names.forEach(name=>{
+  const b=document.createElement("button");
+  b.className="card";
+  b.textContent=name;
+  b.onclick=()=>{
+   selectedName=name;
+   updatePreview();
+   show("preview");
+  };
+  box.appendChild(b);
+ });
+ show("characters");
+}
+
+function updatePreview(){
+ const specialBlue=selectedGrade===10&&selectedName==="JOHN REYNARD";
+ const specialPurple=selectedGrade===8&&selectedName==="XYHH";
+ const preview=document.getElementById("characterPreview");
+ preview.className="preview";
+ if(specialBlue) preview.classList.add("special-blue");
+ if(specialPurple) preview.classList.add("special-purple");
+ document.getElementById("avatar").textContent=
+  selectedGender==="boys"?"🧑":"👩";
+ document.getElementById("previewName").textContent=selectedName;
+ document.getElementById("previewGrade").textContent="GRADE "+selectedGrade;
+ document.getElementById("previewDetails").textContent=
+  (selectedGender==="boys"?"Lalaki":"Babaye")+" • Grade "+selectedGrade;
+ document.getElementById("specialNote").textContent=
+  specialBlue?"ESPESYAL NGA KARAKTER • BLUE THEME":
+  specialPurple?"ESPESYAL NGA KARAKTER • PURPLE THEME":
+  "Estudyante sa New Israel High School";
+}
+
+function confirmCharacter(){
+ document.getElementById("readyAvatar").textContent=
+  selectedGender==="boys"?"🧑":"👩";
+ document.getElementById("readyName").textContent=selectedName;
+ document.getElementById("readyDetails").textContent=
+  "Grade "+selectedGrade+" • "+(selectedGender==="boys"?"Lalaki":"Babaye");
+ show("ready");
+}
+
+document.querySelectorAll("button").forEach(button=>{
+ button.addEventListener("click",()=>{
+  if(document.getElementById("sound")?.checked &&
+     document.getElementById("vibration")?.checked &&
+     navigator.vibrate) navigator.vibrate(15);
+ });
 });
 
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    openScreen('menu');
-  }, 3000);
-});
+makeGrades();
 </script>
-
 </body>
 </html>
