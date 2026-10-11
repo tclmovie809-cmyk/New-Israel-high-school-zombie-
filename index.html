@@ -3,15 +3,14 @@
 <html lang="ceb">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0,
-        maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#000000">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#05070d">
   <title>NEW ISRAEL HIGH SCHOOL ZOMBIE'S</title>
 
   <style>
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
@@ -19,114 +18,355 @@
       height: 100%;
       margin: 0;
       overflow: hidden;
-      background: #000;
-      color: #fff;
+      background: #05070d;
+      color: white;
       font-family: Arial, sans-serif;
-    }
-
-    body {
-      display: grid;
-      place-items: center;
     }
 
     #game {
       position: relative;
       width: 100%;
       height: 100%;
-      background: #000;
+      min-height: 100dvh;
       overflow: hidden;
+      background:
+        radial-gradient(ellipse at center, #101a30 0%, #05070d 65%, #000 100%);
     }
 
-    .intro {
+    .screen {
       position: absolute;
       inset: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+      padding: 22px;
       text-align: center;
-      padding: 24px;
       opacity: 0;
-      animation: reveal 2.5s ease forwards;
+      visibility: hidden;
+      transition: opacity 1s ease, visibility 1s ease;
     }
 
-    .studio {
-      color: #8baeff;
-      font-size: clamp(11px, 2vw, 15px);
+    .screen.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #darkScreen {
+      background: #000;
+      z-index: 10;
+      animation: darkness 1.5s ease forwards;
+    }
+
+    #logoScreen {
+      z-index: 9;
+    }
+
+    .school-logo {
+      width: clamp(110px, 23vh, 190px);
+      height: clamp(110px, 23vh, 190px);
+      object-fit: contain;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 0 25px #267dff66, 0 0 65px #1761d533;
+      animation: logoReveal 1.5s ease both;
+    }
+
+    .school-label {
+      margin-top: 18px;
+      color: #b7ceff;
+      font-size: clamp(10px, 2.3vw, 14px);
+      letter-spacing: 4px;
+    }
+
+    #titleScreen {
+      z-index: 8;
+    }
+
+    .eyebrow {
+      color: #91b3ff;
+      font-size: clamp(10px, 2vw, 14px);
       letter-spacing: 5px;
       margin-bottom: 18px;
     }
 
     h1 {
-      max-width: 800px;
       margin: 0;
-      font-size: clamp(24px, 5vw, 54px);
+      max-width: 1000px;
+      font-size: clamp(25px, 5.4vw, 58px);
+      line-height: 1.2;
       letter-spacing: 2px;
-      line-height: 1.25;
-      text-shadow: 0 0 22px #163d88;
+      text-shadow: 0 0 12px #357bff, 0 0 35px #1646a6;
+      animation: titleGlow 2.5s ease-in-out infinite alternate;
     }
 
     .subtitle {
-      margin-top: 14px;
-      color: #8994a8;
-      font-size: clamp(11px, 2vw, 15px);
-      letter-spacing: 4px;
+      margin-top: 18px;
+      color: #a0aabe;
+      font-size: clamp(10px, 2vw, 15px);
+      letter-spacing: 3px;
     }
 
     .credit {
       position: absolute;
-      bottom: 24px;
-      color: #667085;
-      font-size: 12px;
-      letter-spacing: 2px;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      color: #74819a;
+      font-size: 11px;
+      letter-spacing: 3px;
     }
 
-    @keyframes reveal {
-      from {
-        opacity: 0;
-        transform: scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .panel {
+      width: min(650px, 94vw);
+      padding: clamp(18px, 4vw, 32px);
+      border: 1px solid #426bb955;
+      border-radius: 18px;
+      background: #0b1221dd;
+      box-shadow: 0 0 35px #143d7c22;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      color: #a8c4ff;
+      font-size: clamp(19px, 3vw, 28px);
+    }
+
+    .panel p {
+      color: #d0d8e8;
+      font-size: clamp(12px, 2vw, 15px);
+      line-height: 1.7;
+    }
+
+    .continue {
+      margin-top: 16px;
+      padding: 12px 26px;
+      border: 1px solid #6997ff;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #173e86, #101b38);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #2563eb33;
+    }
+
+    .continue:active {
+      transform: scale(.97);
+    }
+
+    .loading-label {
+      color: #b5c8ee;
+      font-size: 13px;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+    }
+
+    .loading-track {
+      width: min(360px, 75vw);
+      height: 7px;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #202b40;
+      border: 1px solid #3b4e70;
+    }
+
+    .loading-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #2765df, #91baff);
+      box-shadow: 0 0 14px #3980ff;
+      animation: loading 3s linear forwards;
+    }
+
+    .loading-percent {
+      margin-top: 12px;
+      color: #8598ba;
+      font-size: 12px;
+    }
+
+    .skip {
+      position: absolute;
+      top: max(14px, env(safe-area-inset-top));
+      right: 18px;
+      padding: 9px 15px;
+      border: 1px solid #5a7197;
+      border-radius: 9px;
+      background: #0c1527cc;
+      color: #dce7ff;
+      font-size: 12px;
+    }
+
+    @keyframes darkness {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    @keyframes logoReveal {
+      from { opacity: 0; transform: scale(.75); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes titleGlow {
+      from { text-shadow: 0 0 10px #2252a5; }
+      to { text-shadow: 0 0 20px #357bff, 0 0 42px #1646a6; }
+    }
+
+    @keyframes loading {
+      from { width: 0; }
+      to { width: 100%; }
     }
 
     @media (orientation: portrait) {
       #game::after {
-        content: "Palihog ipahigda ang imong cellphone.";
+        content: "Palihog ipahigda ang imong cellphone aron makadula.";
         position: absolute;
         inset: 0;
-        z-index: 5;
+        z-index: 100;
         display: grid;
         place-items: center;
-        padding: 24px;
-        background: #000;
-        color: #b6c8ff;
+        padding: 25px;
+        background: #05070d;
+        color: #b7ceff;
         text-align: center;
         font-size: 18px;
+        line-height: 1.6;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .intro {
-        animation-duration: 0.1s;
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <main id="game">
-    <section class="intro" aria-label="Pasiunang screen">
-      <div class="studio">USA KA DULA SA NIHS</div>
+<main id="game">
 
-      <h1>NEW ISRAEL HIGH SCHOOL<br>ZOMBIE'S</h1>
+  <section id="darkScreen" class="screen active"></section>
 
-      <div class="subtitle">ANG PAGSUGOD SA KALISOD</div>
+  <section id="logoScreen" class="screen">
+    <img class="school-logo" src="./nihs-logo.jpg"
+         alt="Logo sa New Israel High School"
+         onerror="this.alt='Dili ma-load ang school logo'; this.style.display='none';">
+    <div class="school-label">NEW ISRAEL HIGH SCHOOL</div>
+  </section>
 
-      <div class="credit">G I H I M O  N I  J O H N  R E Y N A R D</div>
-    </section>
-  </main>
+  <section id="titleScreen" class="screen">
+    <div class="eyebrow">USA KA DULA SA NIHS</div>
+    <h1>NEW ISRAEL HIGH SCHOOL<br>ZOMBIE'S</h1>
+    <div class="subtitle">ANG PAGSUGOD SA KALISOD</div>
+    <div class="credit">GIHIMO NI JOHN REYNARD</div>
+  </section>
+
+  <section id="disclaimerScreen" class="screen">
+    <button class="skip" id="skipIntro">Laktawi »</button>
+    <div class="panel">
+      <h2>Pahimangno sa mga Magdudula</h2>
+      <p>
+        Kini usa ka hinimong dula para sa kalingawan.
+        Ang mga karakter ug panghitabo niini kay hinimo-himo lamang.
+        Dili kini tinuod nga panghitabo sa eskwelahan.
+      </p>
+      <p>
+        Pagdula nga responsable ug sundon ang mga lagda sa dula.
+      </p>
+      <button class="continue" id="continueButton">Nasabtan nako</button>
+    </div>
+  </section>
+
+  <section id="loadingScreen" class="screen">
+    <div class="loading-label">GIANDAM ANG DULA...</div>
+    <div class="loading-track"><div class="loading-fill"></div></div>
+    <div class="loading-percent">Palihog hulat kadiyot</div>
+  </section>
+
+  <section id="readyScreen" class="screen">
+    <div class="panel">
+      <h2>Andam na ba ka?</h2>
+      <p>Natapos na ang pasiuna sa NEW ISRAEL HIGH SCHOOL ZOMBIE'S.</p>
+      <p>Ang main menu atong idugang sa sunod nga lakang.</p>
+      <button class="continue" id="replayButton">Tan-awon pag-usab</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(() => {
+  const ids = [
+    "darkScreen",
+    "logoScreen",
+    "titleScreen",
+    "disclaimerScreen",
+    "loadingScreen",
+    "readyScreen"
+  ];
+
+  const screens = Object.fromEntries(
+    ids.map(id => [id, document.getElementById(id)])
+  );
+
+  let timers = [];
+
+  function clearTimers() {
+    timers.forEach(timer => clearTimeout(timer));
+    timers = [];
+  }
+
+  function show(id) {
+    Object.values(screens).forEach(screen => {
+      screen.classList.remove("active");
+    });
+    screens[id].classList.add("active");
+  }
+
+  function later(callback, delay) {
+    timers.push(setTimeout(callback, delay));
+  }
+
+  function startIntro() {
+    clearTimers();
+    show("darkScreen");
+
+    later(() => {
+      show("logoScreen");
+    }, 1400);
+
+    later(() => {
+      show("titleScreen");
+    }, 4400);
+
+    later(() => {
+      show("disclaimerScreen");
+    }, 7800);
+  }
+
+  function startLoading() {
+    show("loadingScreen");
+
+    const fill = document.querySelector(".loading-fill");
+    fill.style.animation = "none";
+    void fill.offsetWidth;
+    fill.style.animation = "loading 3s linear forwards";
+
+    later(() => {
+      show("readyScreen");
+    }, 3200);
+  }
+
+  document.getElementById("continueButton")
+    .addEventListener("click", startLoading);
+
+  document.getElementById("skipIntro")
+    .addEventListener("click", startLoading);
+
+  document.getElementById("replayButton")
+    .addEventListener("click", startIntro);
+
+  startIntro();
+})();
+</script>
 </body>
 </html>
