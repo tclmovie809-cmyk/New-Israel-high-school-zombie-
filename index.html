@@ -1,372 +1,498 @@
 
 <!DOCTYPE html>
-<html lang="ceb">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#05070d">
-  <title>NEW ISRAEL HIGH SCHOOL ZOMBIE'S</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEW ISRAEL HIGH SCHOOL ZOMBIE'S</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      background: #05070d;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
+body {
+  background: #030609;
+  color: white;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+}
 
-    #game {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      min-height: 100dvh;
-      overflow: hidden;
-      background:
-        radial-gradient(ellipse at center, #101a30 0%, #05070d 65%, #000 100%);
-    }
+button {
+  border: 1px solid #76e7ff;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #087aab, #4221a5);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 14px 22px;
+  cursor: pointer;
+  box-shadow: 0 0 18px #087aab66;
+  transition: .2s;
+}
 
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      text-align: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 1s ease, visibility 1s ease;
-    }
+button:active {
+  transform: scale(.95);
+}
 
-    .screen.active {
-      opacity: 1;
-      visibility: visible;
-    }
+button:hover {
+  filter: brightness(1.25);
+}
 
-    #darkScreen {
-      background: #000;
-      z-index: 10;
-      animation: darkness 1.5s ease forwards;
-    }
+.screen {
+  display: none;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: auto;
+}
 
-    #logoScreen {
-      z-index: 9;
-    }
+.screen.active {
+  display: flex;
+  animation: fadeIn .6s ease;
+}
 
-    .school-logo {
-      width: clamp(110px, 23vh, 190px);
-      height: clamp(110px, 23vh, 190px);
-      object-fit: contain;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 0 25px #267dff66, 0 0 65px #1761d533;
-      animation: logoReveal 1.5s ease both;
-    }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-    .school-label {
-      margin-top: 18px;
-      color: #b7ceff;
-      font-size: clamp(10px, 2.3vw, 14px);
-      letter-spacing: 4px;
-    }
+/* INTRO */
+#intro {
+  flex-direction: column;
+  gap: 20px;
+  background: #000;
+}
 
-    #titleScreen {
-      z-index: 8;
-    }
+.logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 2px solid #56dfff;
+  box-shadow: 0 0 30px #00bfff99;
+}
 
-    .eyebrow {
-      color: #91b3ff;
-      font-size: clamp(10px, 2vw, 14px);
-      letter-spacing: 5px;
-      margin-bottom: 18px;
-    }
+#intro h1 {
+  font-size: clamp(22px, 5vw, 42px);
+  color: #65eaff;
+  text-shadow: 0 0 20px #008cff;
+}
 
-    h1 {
-      margin: 0;
-      max-width: 1000px;
-      font-size: clamp(25px, 5.4vw, 58px);
-      line-height: 1.2;
-      letter-spacing: 2px;
-      text-shadow: 0 0 12px #357bff, 0 0 35px #1646a6;
-      animation: titleGlow 2.5s ease-in-out infinite alternate;
-    }
+#intro p {
+  color: #b8c8d7;
+  max-width: 480px;
+  line-height: 1.6;
+}
 
-    .subtitle {
-      margin-top: 18px;
-      color: #a0aabe;
-      font-size: clamp(10px, 2vw, 15px);
-      letter-spacing: 3px;
-    }
+.loading {
+  width: 200px;
+  height: 5px;
+  background: #17232d;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-    .credit {
-      position: absolute;
-      bottom: max(20px, env(safe-area-inset-bottom));
-      color: #74819a;
-      font-size: 11px;
-      letter-spacing: 3px;
-    }
+.loading span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: #4beaff;
+  animation: load 2s forwards;
+}
 
-    .panel {
-      width: min(650px, 94vw);
-      padding: clamp(18px, 4vw, 32px);
-      border: 1px solid #426bb955;
-      border-radius: 18px;
-      background: #0b1221dd;
-      box-shadow: 0 0 35px #143d7c22;
-    }
+@keyframes load {
+  to { width: 100%; }
+}
 
-    .panel h2 {
-      margin: 0 0 16px;
-      color: #a8c4ff;
-      font-size: clamp(19px, 3vw, 28px);
-    }
+/* MAIN MENU BACKGROUND */
+#menu, #shop, #settings, #play {
+  flex-direction: column;
+  gap: 18px;
+  background:
+    linear-gradient(#02070ad9, #02070af2),
+    repeating-linear-gradient(
+      90deg,
+      #18232c 0px,
+      #18232c 60px,
+      #0a1118 61px,
+      #0a1118 120px
+    );
+}
 
-    .panel p {
-      color: #d0d8e8;
-      font-size: clamp(12px, 2vw, 15px);
-      line-height: 1.7;
-    }
+.school-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: .65;
+}
 
-    .continue {
-      margin-top: 16px;
-      padding: 12px 26px;
-      border: 1px solid #6997ff;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #173e86, #101b38);
-      color: white;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 0 20px #2563eb33;
-    }
+.light {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 45%;
+  background: radial-gradient(ellipse, #146a8460, transparent 70%);
+}
 
-    .continue:active {
-      transform: scale(.97);
-    }
+.floor {
+  position: absolute;
+  bottom: 0;
+  height: 30%;
+  width: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    #111a20,
+    #111a20 35px,
+    #26343d 37px,
+    #10171d 40px
+  );
+  transform: perspective(180px) rotateX(8deg);
+}
 
-    .loading-label {
-      color: #b5c8ee;
-      font-size: 13px;
-      letter-spacing: 3px;
-      margin-bottom: 18px;
-    }
+.desk {
+  position: absolute;
+  bottom: 14%;
+  width: 95px;
+  height: 32px;
+  background: #493a2b;
+  border: 3px solid #765a3a;
+  box-shadow: 0 10px 0 #171b1e;
+  transform: skewY(-4deg);
+}
 
-    .loading-track {
-      width: min(360px, 75vw);
-      height: 7px;
-      overflow: hidden;
-      border-radius: 10px;
-      background: #202b40;
-      border: 1px solid #3b4e70;
-    }
+.desk.one { left: 5%; }
+.desk.two { right: 7%; bottom: 20%; }
+.desk.three { left: 35%; bottom: 8%; }
 
-    .loading-fill {
-      width: 0;
-      height: 100%;
-      background: linear-gradient(90deg, #2765df, #91baff);
-      box-shadow: 0 0 14px #3980ff;
-      animation: loading 3s linear forwards;
-    }
+.zombie {
+  position: absolute;
+  width: 45px;
+  height: 95px;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+  opacity: .8;
+  filter: drop-shadow(0 0 12px #45ff9a55);
+  animation: sway 3s ease-in-out infinite;
+}
 
-    .loading-percent {
-      margin-top: 12px;
-      color: #8598ba;
-      font-size: 12px;
-    }
+.zombie .head {
+  width: 35px;
+  height: 38px;
+  margin: auto;
+  border-radius: 45% 45% 35% 35%;
+  background: #263b31;
+  border: 2px solid #4c725a;
+}
 
-    .skip {
-      position: absolute;
-      top: max(14px, env(safe-area-inset-top));
-      right: 18px;
-      padding: 9px 15px;
-      border: 1px solid #5a7197;
-      border-radius: 9px;
-      background: #0c1527cc;
-      color: #dce7ff;
-      font-size: 12px;
-    }
+.zombie .body {
+  width: 35px;
+  height: 48px;
+  margin: 2px auto;
+  background: #17271f;
+  border: 2px solid #334c3b;
+  border-radius: 8px 8px 2px 2px;
+}
 
-    @keyframes darkness {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
+@keyframes sway {
+  0%,100% { transform: translateX(-50%) rotate(-3deg); }
+  50% { transform: translateX(-50%) rotate(4deg); }
+}
 
-    @keyframes logoReveal {
-      from { opacity: 0; transform: scale(.75); }
-      to { opacity: 1; transform: scale(1); }
-    }
+.menu-content {
+  z-index: 2;
+  width: min(100%, 430px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
 
-    @keyframes titleGlow {
-      from { text-shadow: 0 0 10px #2252a5; }
-      to { text-shadow: 0 0 20px #357bff, 0 0 42px #1646a6; }
-    }
+.eyebrow {
+  color: #65eaff;
+  font-size: 11px;
+  letter-spacing: 5px;
+  font-weight: bold;
+}
 
-    @keyframes loading {
-      from { width: 0; }
-      to { width: 100%; }
-    }
+.game-title {
+  font-size: clamp(27px, 7vw, 46px);
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: #f1f8ff;
+  text-shadow: 0 0 8px #00baff, 0 0 24px #0073ff;
+}
 
-    @media (orientation: portrait) {
-      #game::after {
-        content: "Palihog ipahigda ang imong cellphone aron makadula.";
-        position: absolute;
-        inset: 0;
-        z-index: 100;
-        display: grid;
-        place-items: center;
-        padding: 25px;
-        background: #05070d;
-        color: #b7ceff;
-        text-align: center;
-        font-size: 18px;
-        line-height: 1.6;
-      }
-    }
+.game-title span {
+  color: #66f0ad;
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        transition-duration: .01ms !important;
-      }
-    }
-  </style>
+.subtitle {
+  color: #b1c0cb;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 280px);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.menu-buttons button {
+  width: 100%;
+}
+
+.secondary {
+  background: #101923e8;
+  border-color: #475c6d;
+  box-shadow: none;
+}
+
+.footer {
+  color: #778c9a;
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.panel {
+  z-index: 2;
+  width: min(100%, 430px);
+  padding: 25px;
+  border: 1px solid #345a70;
+  border-radius: 20px;
+  background: #07121beF;
+  box-shadow: 0 0 35px #008cff22;
+}
+
+.panel h2 {
+  color: #68eaff;
+  margin-bottom: 20px;
+}
+
+.panel p {
+  color: #c5d1dc;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.panel button {
+  margin: 5px;
+}
+
+.setting-row {
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  background: #142330;
+  color: #d7e7f2;
+  text-align: left;
+  font-size: 14px;
+}
+
+.small-note {
+  color: #9baebc;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .screen { padding: 10px; }
+  .menu-content { gap: 8px; }
+  .menu-buttons {
+    flex-direction: row;
+    width: min(100%, 460px);
+  }
+  .menu-buttons button {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  .logo { width: 75px; height: 75px; }
+  .panel { padding: 14px; }
+}
+</style>
 </head>
 
 <body>
-<main id="game">
 
-  <section id="darkScreen" class="screen active"></section>
+<!-- INTRO SCREEN -->
+<section id="intro" class="screen active">
+  <img class="logo" src="./nihs-logo.jpg"
+       alt="NIHS School Logo"
+       onerror="this.style.display='none'">
 
-  <section id="logoScreen" class="screen">
-    <img class="school-logo" src="./nihs-logo.jpg"
-         alt="Logo sa New Israel High School"
-         onerror="this.alt='Dili ma-load ang school logo'; this.style.display='none';">
-    <div class="school-label">NEW ISRAEL HIGH SCHOOL</div>
-  </section>
+  <div class="eyebrow">PRESENTS</div>
 
-  <section id="titleScreen" class="screen">
-    <div class="eyebrow">USA KA DULA SA NIHS</div>
-    <h1>NEW ISRAEL HIGH SCHOOL<br>ZOMBIE'S</h1>
-    <div class="subtitle">ANG PAGSUGOD SA KALISOD</div>
-    <div class="credit">GIHIMO NI JOHN REYNARD</div>
-  </section>
+  <h1>NEW ISRAEL<br>HIGH SCHOOL ZOMBIE'S</h1>
 
-  <section id="disclaimerScreen" class="screen">
-    <button class="skip" id="skipIntro">Laktawi »</button>
-    <div class="panel">
-      <h2>Pahimangno sa mga Magdudula</h2>
-      <p>
-        Kini usa ka hinimong dula para sa kalingawan.
-        Ang mga karakter ug panghitabo niini kay hinimo-himo lamang.
-        Dili kini tinuod nga panghitabo sa eskwelahan.
-      </p>
-      <p>
-        Pagdula nga responsable ug sundon ang mga lagda sa dula.
-      </p>
-      <button class="continue" id="continueButton">Nasabtan nako</button>
+  <p>
+    Usa ka eskwelahan nga nahimong dapit sa kalisang.
+    Andam ka ba nga makalahutay?
+  </p>
+
+  <p class="small-note">
+    Dula lamang kini nga hinimo-himo. Walay tinuod nga tawo
+    o panghitabo nga gihulagway.
+  </p>
+
+  <div class="loading"><span></span></div>
+  <p class="small-note">Gipalambo ni John Reynard</p>
+</section>
+
+<!-- MAIN MENU -->
+<section id="menu" class="screen">
+  <div class="school-scene">
+    <div class="light"></div>
+    <div class="floor"></div>
+    <div class="desk one"></div>
+    <div class="desk two"></div>
+    <div class="desk three"></div>
+    <div class="zombie">
+      <div class="head"></div>
+      <div class="body"></div>
     </div>
-  </section>
+  </div>
 
-  <section id="loadingScreen" class="screen">
-    <div class="loading-label">GIANDAM ANG DULA...</div>
-    <div class="loading-track"><div class="loading-fill"></div></div>
-    <div class="loading-percent">Palihog hulat kadiyot</div>
-  </section>
+  <div class="menu-content">
+    <div class="eyebrow">NIHS • SURVIVAL PROJECT</div>
 
-  <section id="readyScreen" class="screen">
-    <div class="panel">
-      <h2>Andam na ba ka?</h2>
-      <p>Natapos na ang pasiuna sa NEW ISRAEL HIGH SCHOOL ZOMBIE'S.</p>
-      <p>Ang main menu atong idugang sa sunod nga lakang.</p>
-      <button class="continue" id="replayButton">Tan-awon pag-usab</button>
+    <h1 class="game-title">
+      ZOMBIE<br><span>SCHOOL</span>
+    </h1>
+
+    <p class="subtitle">MAKALAHUTAY SA ESKWELAHAN</p>
+
+    <div class="menu-buttons">
+      <button onclick="openScreen('play')">▶ DULA NA</button>
+      <button class="secondary" onclick="openScreen('shop')">
+        ⚒ TINDAHAN
+      </button>
+      <button class="secondary" onclick="openScreen('settings')">
+        ⚙ MGA SETTING
+      </button>
     </div>
-  </section>
 
-</main>
+    <p class="footer">DEVELOPED BY JOHN REYNARD</p>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop" class="screen">
+  <div class="panel">
+    <h2>⚒ TINDAHAN</h2>
+
+    <p>
+      Dinhi ibutang ang mga armas, gamit ug mga butang
+      nga magamit sa imong paglahutay.
+    </p>
+
+    <div class="setting-row">✎ Krayola — moabot nga bahin</div>
+    <div class="setting-row">📚 Libro — moabot nga bahin</div>
+    <div class="setting-row">🎒 Bag — moabot nga bahin</div>
+
+    <p class="small-note">
+      Ang tinuod nga sistema sa pagpalit ug kadaot sa armas
+      himoon sa sunod nga mga lakang.
+    </p>
+
+    <button onclick="openScreen('menu')">← BALIK</button>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="screen">
+  <div class="panel">
+    <h2>⚙ MGA SETTING</h2>
+
+    <p>Mga kapilian sa dula</p>
+
+    <div class="setting-row">
+      <label>
+        <input id="soundToggle" type="checkbox" checked>
+        Tingog sa mga buton
+      </label>
+    </div>
+
+    <div class="setting-row">
+      <label>
+        <input id="vibrationToggle" type="checkbox">
+        Pagkurog sa telepono (kon suportado)
+      </label>
+    </div>
+
+    <p class="small-note">
+      Ang musika, tingog sa zombie ug uban pang kontrol
+      idugang sa sunod nga mga lakang.
+    </p>
+
+    <button onclick="openScreen('menu')">← BALIK</button>
+  </div>
+</section>
+
+<!-- PLAY PLACEHOLDER -->
+<section id="play" class="screen">
+  <div class="panel">
+    <h2>ANDAM NA BA KA?</h2>
+
+    <p>
+      Ang pagpili sa grado, karakter ug unang mapa
+      himoon sa sunod nga lakang.
+    </p>
+
+    <p class="small-note">
+      Wala pa nagsugod ang aktuwal nga panagsangka.
+    </p>
+
+    <button onclick="openScreen('menu')">← BALIK SA MENU</button>
+  </div>
+</section>
 
 <script>
-(() => {
-  const ids = [
-    "darkScreen",
-    "logoScreen",
-    "titleScreen",
-    "disclaimerScreen",
-    "loadingScreen",
-    "readyScreen"
-  ];
+function openScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(function(screen) {
+    screen.classList.remove('active');
+  });
 
-  const screens = Object.fromEntries(
-    ids.map(id => [id, document.getElementById(id)])
-  );
+  const target = document.getElementById(screenId);
 
-  let timers = [];
-
-  function clearTimers() {
-    timers.forEach(timer => clearTimeout(timer));
-    timers = [];
+  if (target) {
+    target.classList.add('active');
   }
+}
 
-  function show(id) {
-    Object.values(screens).forEach(screen => {
-      screen.classList.remove("active");
-    });
-    screens[id].classList.add("active");
+function playClickSound() {
+  const soundToggle = document.getElementById('soundToggle');
+
+  if (soundToggle && soundToggle.checked &&
+      navigator.vibrate) {
+    navigator.vibrate(15);
   }
+}
 
-  function later(callback, delay) {
-    timers.push(setTimeout(callback, delay));
-  }
+document.querySelectorAll('button').forEach(function(button) {
+  button.addEventListener('click', playClickSound);
+});
 
-  function startIntro() {
-    clearTimers();
-    show("darkScreen");
-
-    later(() => {
-      show("logoScreen");
-    }, 1400);
-
-    later(() => {
-      show("titleScreen");
-    }, 4400);
-
-    later(() => {
-      show("disclaimerScreen");
-    }, 7800);
-  }
-
-  function startLoading() {
-    show("loadingScreen");
-
-    const fill = document.querySelector(".loading-fill");
-    fill.style.animation = "none";
-    void fill.offsetWidth;
-    fill.style.animation = "loading 3s linear forwards";
-
-    later(() => {
-      show("readyScreen");
-    }, 3200);
-  }
-
-  document.getElementById("continueButton")
-    .addEventListener("click", startLoading);
-
-  document.getElementById("skipIntro")
-    .addEventListener("click", startLoading);
-
-  document.getElementById("replayButton")
-    .addEventListener("click", startIntro);
-
-  startIntro();
-})();
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    openScreen('menu');
+  }, 3000);
+});
 </script>
+
 </body>
 </html>
